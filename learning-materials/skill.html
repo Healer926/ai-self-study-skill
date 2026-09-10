@@ -29,6 +29,9 @@
   .src a{color:var(--accent);text-decoration:none}
   .src a:hover{text-decoration:underline}
   .quiz b{color:var(--warn)}
+  table{border-collapse:collapse;width:100%;margin-top:12px}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;font-size:14px;vertical-align:top}
+  th{background:var(--accent-soft)}
   .quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 14px;
     border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
     font-size:14px;color:var(--ink);transition:.15s}
@@ -101,6 +104,13 @@
       <p><b>易混淆小结</b>：Prompt = 一次便条；宏 = 写死的流水线；Connector = 一根外接水管；Skill = 一本“这类活怎么干”的工作手册（可调用多根水管）。</p>
       <p><b>边界</b>：Skill 不能替代模型能力本身；写得太啰嗦或场景不清反而会让 Agent 跑偏。好的 Skill 应“小而专”，讲清何时用、怎么用、产出什么。</p>
     </div>
+    <table>
+      <tr><th>易混淆对象</th><th>与 Skill 的关键区别</th><th>一句话区分</th></tr>
+      <tr><td>Prompt（单次提示）</td><td>Prompt 是一次性指令、用完即弃；Skill 是带结构、可复用、可版本化的“方法包”</td><td>Prompt 是便条，Skill 是工作手册</td></tr>
+      <tr><td>Agent</td><td>Agent 是执行者（运行时系统）；Skill 是 Agent 在相关任务时加载的“知识 / 流程说明书”</td><td>Skill 是手册，Agent 是翻手册干活的人</td></tr>
+      <tr><td>Plugin / Connector（连接器）</td><td>Connector 提供“连某个外部服务的能力”；Skill 提供“做某类任务的方法”，内部可调用多个 Connector</td><td>Connector 是水管，Skill 是用管子的工法</td></tr>
+      <tr><td>宏 / 脚本模板</td><td>宏是写死步骤的自动化；Skill 用自然语言框架引导模型灵活执行，容忍不同输入</td><td>宏是死流水线，Skill 是活方法</td></tr>
+    </table>
   </div>
 
   <div class="card quiz">
@@ -109,6 +119,7 @@
       <li><b>项目级 Skill 和用户级 Skill 在“存放位置 / 作用范围”上有什么区别？</b><br>提示：前者在仓库 <code>.workbuddy/skills/</code> 内、仅本仓库生效；后者在用户目录、全局可用。</li>
       <li><b>为什么 SKILL.md 顶部的 name / description 很重要？</b><br>提示：它们决定 Skill 的标识与“何时被匹配 / 如何被调用”。</li>
       <li><b>一个“什么都想管”的 Skill 会有什么问题？</b><br>提示：范围模糊会让 Agent 误触发或执行失焦，反而不如小而专的 Skill 好用。</li>
+      <li><b>Skill 与“插件 / 连接器（Connector）”有什么不同？一个 Skill 内部能否调用多个 Connector？</b><br>提示：Connector 是“连外部服务的能力”，Skill 是“做某类任务的方法”，方法内部可调用多根水管。</li>
     </ol>
     <details class="warn" style="margin-top:12px;cursor:pointer">
       <summary style="font-weight:700">参考答案（点击展开）</summary>
@@ -116,6 +127,7 @@
         <li><b>答</b>：项目级 Skill 存于仓库内 <code>.workbuddy/skills/&lt;name&gt;/</code>，仅对该仓库生效、随仓库提交共享；用户级存于 <code>~/.workbuddy/skills/</code>，对你所有项目全局可用。</li>
         <li><b>答</b>：name 是唯一标识，description 用于让 Agent / 平台判断“何时该加载这个 Skill、如何被调用”，写不清会导致匹配失败或误触发。</li>
         <li><b>答</b>：范围模糊会让 Agent 在错误场景误触发、或执行时目标失焦；小而专、边界清晰的 Skill 更易被准确匹配、结果更可控。</li>
+        <li><b>答</b>：Connector 提供“连接某个外部服务的能力”（如某个 API）；Skill 提供“完成某类任务的方法”。一个 Skill 内部完全可以调用多个 Connector / 工具——Skill 是“工法说明书”，Connector 是被调用的“一根根水管”。</li>
       </ol>
     </details>
   </div>
@@ -169,6 +181,7 @@
       <li><a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank" rel="noopener">WorkBuddy 官方文档《WorkBuddy 简介》</a> —— 含 Agent / 技能定位与平台能力说明，是本项目级 Skill 的权威依据。</li>
       <li>本仓库 <a href="../.workbuddy/skills/concept-learner-skill/SKILL.md">SKILL.md</a> —— 既是说明文档，也是 Skill 本身的实例。</li>
       <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 强调“简单、可组合、可复用”的 Agent 构建思路，与“小而专的 Skill”理念一致。</li>
+      <li>本仓库 <a href="concept-relationship.html">概念关系说明（concept-relationship.html）</a> —— 说明 Agent / 上下文 / Skill 三者关系，是理解“Skill 如何沉淀可复用任务知识”的补充材料。</li>
     </ul>
   </div>
 

@@ -29,6 +29,9 @@
   .src a{color:var(--accent);text-decoration:none}
   .src a:hover{text-decoration:underline}
   .quiz b{color:var(--warn)}
+  table{border-collapse:collapse;width:100%;margin-top:12px}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;font-size:14px;vertical-align:top}
+  th{background:var(--accent-soft)}
   .quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 14px;
     border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
     font-size:14px;color:var(--ink);transition:.15s}
@@ -102,6 +105,13 @@
       <p><b>易混淆小结</b>：参数记忆 = 模型脑子里背的；上下文 = 这次摊在工作台上的纸；Prompt = 其中你写的一张便条。</p>
       <p><b>边界</b>：超过窗口必须靠检索 / 摘要补全；把敏感信息放进上下文会带来泄露风险，需注意脱敏。</p>
     </div>
+    <table>
+      <tr><th>易混淆对象</th><th>与“上下文”的关键区别</th><th>一句话区分</th></tr>
+      <tr><td>长期记忆</td><td>上下文是本次推理可见的文本；模型默认不跨会话保存，所谓“记忆”多为应用层用数据库模拟</td><td>上下文是这次摊开的纸，记忆是背后档案柜</td></tr>
+      <tr><td>Prompt（单次提示）</td><td>Prompt 只是上下文的一部分；上下文 = 系统设定 + 历史 + 检索 + 当前提问 的全体</td><td>Prompt 是便条，上下文是整张工作台</td></tr>
+      <tr><td>训练数据 / 参数记忆</td><td>训练数据在预训练阶段固化进参数；上下文是推理时临时喂入</td><td>参数记忆是脑子背的，上下文是这次摊开看的</td></tr>
+      <tr><td>“窗口越大越好”</td><td>过长会引入噪声、拖慢、增成本、稀释注意力（中间遗忘）</td><td>够用比最大更重要</td></tr>
+    </table>
   </div>
 
   <div class="card quiz">
@@ -110,6 +120,7 @@
       <li><b>为什么“模型忘了前面的话”通常是上下文窗口 / 拼接策略问题，而不是模型真的有记忆？</b><br>提示：模型无跨轮记忆，靠本次输入拼接；超窗口即被截断。</li>
       <li><b>注意力机制如何解决“长距离依赖”？</b><br>提示：每个 token 可直接关注远距离相关 token，不必逐字传递。</li>
       <li><b>什么场景应优先用 RAG 而不是无限扩大上下文？</b><br>提示：知识库巨大、需控制成本、且只需相关片段时。</li>
+      <li><b>面对 200 页合同这类长文档，为什么通常先做“切片 + 检索”再回答，而不是直接把全文塞进上下文？</b><br>提示：避免超窗口截断、控制成本与延迟，并减少无关噪声。</li>
     </ol>
     <details class="warn" style="margin-top:12px;cursor:pointer">
       <summary style="font-weight:700">参考答案（点击展开）</summary>
@@ -117,6 +128,7 @@
         <li><b>答</b>：模型本身不跨会话保存信息；它每次只“看”本次被拼进窗口的文本。所谓“忘了”，是拼接策略把旧内容挤出窗口或被截断，并非模型有记忆后丢失。</li>
         <li><b>答</b>：Transformer 的注意力让任意两个 token 直接建立关联，模型可在生成时直接“回头看”远距离的相关前文，不必靠逐字顺序传递，从而缓解长距离依赖。</li>
         <li><b>答</b>：当知识库极大、只需其中相关片段、且要控制成本与延迟时，RAG 用检索把少量相关文本注入上下文，比把整库塞进窗口更省、更准。</li>
+        <li><b>答</b>：直接把全文塞进上下文会超窗口被截断、且更贵更慢、还混入大量无关噪声；切片 + 向量检索只把最相关的少数片段注入本次上下文，既落在窗口内、又更准更省，这正是用“检索补全上下文”代替“无限扩大窗口”。</li>
       </ol>
     </details>
   </div>
@@ -170,6 +182,7 @@
       <li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arXiv《Attention Is All You Need》(1706.03762)</a> —— 提出 Transformer 与注意力机制，是模型“利用上下文”的底层原理。</li>
       <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 在 Agent 设计中对上下文窗口与记忆管理有实践讨论。</li>
       <li><a href="https://en.wikipedia.org/wiki/Large_language_model" target="_blank" rel="noopener">Wikipedia《Large language model》</a> —— 对 LLM、token 与上下文窗口的通用背景介绍，便于建立整体认知。</li>
+      <li><a href="https://arxiv.org/abs/2004.05150" target="_blank" rel="noopener">arXiv《Longformer: The Long-Document Transformer》(2004.05150)</a> —— 提出随序列长度线性扩展的注意力机制，是“如何让模型处理超长上下文”的代表性工程方案。</li>
     </ul>
   </div>
 
