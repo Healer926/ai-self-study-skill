@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent / 上下文 / Skill 三者关系</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#fff; --ink:#1f2329; --sub:#5c6370; --line:#e6e8eb;
+    --c1:#3b6ef5; --c2:#2f9e6e; --c3:#9b59d0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+        background:var(--bg);color:var(--ink);line-height:1.75;padding:32px 16px}
+  .wrap{max-width:900px;margin:0 auto}
+  header{background:linear-gradient(135deg,#3b6ef5,#9b59d0);color:#fff;border-radius:14px;padding:28px;margin-bottom:20px}
+  header h1{font-size:25px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:16px}
+  .card h2{font-size:18px;margin-bottom:12px;border-left:4px solid var(--c1);padding-left:10px;color:var(--c1)}
+  table{width:100%;border-collapse:collapse;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:10px 12px;text-align:left;font-size:14px;vertical-align:top}
+  th{background:#f0f3ff}
+  .roles{display:flex;gap:12px;flex-wrap:wrap}
+  .role{flex:1;min-width:200px;border:1px solid var(--line);border-radius:12px;padding:14px;background:#fafbff}
+  .role b{color:var(--c1)}
+  .role.c2 b{color:var(--c2)} .role.c3 b{color:var(--c3)}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}
+  .node{border-radius:10px;padding:12px 14px;color:#fff;font-size:14px;font-weight:600}
+  .n1{background:var(--c3)} .n2{background:var(--c2)} .n3{background:var(--c1)} .n4{background:#444}
+  .arrow{color:var(--sub);font-size:20px}
+  .focus{border-left:4px solid var(--c2);background:#eefaf4;padding:12px 14px;border-radius:8px;margin:10px 0}
+  .focus.b{border-left-color:var(--c3);background:#f6eefb}
+  .mermaid{background:#fbfcff;border:1px dashed var(--line);border-radius:10px;padding:14px}
+  footer{text-align:center;color:var(--sub);font-size:13px;margin-top:16px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>window.addEventListener('load',()=>{if(window.mermaid)mermaid.initialize({startOnLoad:true});});</script>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Agent / 上下文（Context） / Skill 三者关系</h1></header>
+
+  <div class="card">
+    <h2>① 一句话角色比喻</h2>
+    <div class="roles">
+      <div class="role c3"><b>Skill = 工作手册</b><br>规定好“这类任务怎么做”，把经验固化成可复用方法。</div>
+      <div class="role c2"><b>Context = 短期记忆 / 工作台</b><br>保存当前这次任务的全过程信息，保证 Agent 不丢前文。</div>
+      <div class="role c1"><b>Agent = 执行员工</b><br>拿着手册、依托记忆，一步步把任务做完。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>② 关系流程图</h2>
+    <div class="flow">
+      <span class="node n3">用户需求</span><span class="arrow">→</span>
+      <span class="node n1">Skill（规则/流程）</span><span class="arrow">+</span>
+      <span class="node n2">Context（记忆）</span><span class="arrow">→</span>
+      <span class="node n3">Agent（执行循环）</span><span class="arrow">→</span>
+      <span class="node n4">交付结果</span>
+    </div>
+    <div class="mermaid">
+flowchart LR
+  U[用户需求] --> A[Agent 执行循环]
+  S[Skill 工作手册] -.提供规则/步骤.-> A
+  C[Context 上下文/记忆] -.提供前文与状态.-> A
+  A --> R[交付结果: 学习资料等]
+  A -.读取并写入.-> C
+    </div>
+    <p style="color:var(--sub);font-size:13px">（Mermaid 图需联网加载；下方文字与表格已完整说明关系。）</p>
+  </div>
+
+  <div class="card">
+    <h2>③ 三者对比</h2>
+    <table>
+      <tr><th>维度</th><th>Skill</th><th>上下文 Context</th><th>Agent</th></tr>
+      <tr><td>本质</td><td>可复用的方法 / 知识包</td><td>一次任务可见的文本范围</td><td>自主执行循环的系统</td></tr>
+      <tr><td>角色</td><td>说明书</td><td>记忆 / 工作台</td><td>执行者</td></tr>
+      <tr><td>存在位置</td><td>仓库 / 用户目录的 SKILL.md</td><td>模型输入（token 窗口）</td><td>运行时（代码 + 模型）</td></tr>
+      <tr><td>是否跨会话</td><td>是（随仓库保存）</td><td>否（默认不跨会话）</td><td>否（每次运行新建）</td></tr>
+      <tr><td>与另两者的关系</td><td>被 Agent 加载</td><td>被 Agent 读写</td><td>加载 Skill、读写 Context</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>④ 重点：上下文如何影响 Agent 的工作</h2>
+    <div class="focus">
+      <p>Agent 的每一步决策都依赖“当前上下文”里的信息：系统设定、历史步骤、工具返回、用户新要求。上下文就是 Agent 的<strong>工作台</strong>。</p>
+      <p>如果上下文长度不足或被不当截断，Agent 会<strong>丢失前面的指令和中间结果</strong>——即使 Skill 写得再好，也会因为“看不见需求”而跑偏、重复或中断。因此 Agent 设计里常做上下文管理：压缩历史、用检索把相关片段拉回窗口、把长期信息存外部库。</p>
+      <p>结论：<strong>Skill 决定“怎么干”，Context 决定“ Agent 此刻还能记得什么”；两者共同决定 Agent 能不能把事干成。</strong></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⑤ 重点：Skill 如何沉淀可复用任务知识</h2>
+    <div class="focus b">
+      <p>没有 Skill 时，每学会一件事都只停留在一次聊天里，下次要重新教。Skill 把“这次怎么把 Agent / 上下文这类概念讲清楚”的<strong>框架与步骤</strong>写成 SKILL.md，于是：</p>
+      <ul>
+        <li><b>结构化</b>：明确适用场景、输入、生成步骤、输出结构、来源与自检要求；</li>
+        <li><b>可复用</b>：下次只要换一个概念名（如 RAG），同一套框架就产出一份新资料；</li>
+        <li><b>可迭代 / 可共享</b>：随仓库提交、做版本管理，团队成员也能直接用。</li>
+      </ul>
+      <p>结论：<strong>Skill 是“把一次性对话经验”升级为“项目级可复用能力”的载体</strong>，而 Agent + 上下文则是这套能力真正跑起来的执行环境。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⑥ 个人理解小结</h2>
+    <p>三者是“<b>能力（Skill）→ 状态（Context）→ 执行（Agent）</b>”的闭环：Skill 提供方法，Context 提供当下可用的信息，Agent 把两者结合起来自主推进任务。理解它们的关系后，我不再把“让 AI 帮我做事”当成一句提示词，而是当成“定义好手册、管理好上下文、交给 Agent 执行”的工程问题——本仓库的 Skill 与三份资料，就是这套认知的落地。</p>
+  </div>
+
+  <footer>由 concept-learner-skill 生成 · 已人工核查</footer>
+</div>
+</body>
+</html>
