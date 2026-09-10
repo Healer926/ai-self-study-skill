@@ -1,23 +1,113 @@
 <!DOCTYPE html>
-<html lang="zh‑CN">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF‑8">
-<title>大模型上下文 Context</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大模型的上下文（Context）· 概念学习资料</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1f2329; --sub:#5c6370;
+    --line:#e6e8eb; --accent:#2f9e6e; --accent-soft:#e7f6ef; --warn:#b8860b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+        background:var(--bg);color:var(--ink);line-height:1.75;padding:32px 16px}
+  .wrap{max-width:880px;margin:0 auto}
+  header{background:var(--accent);color:#fff;border-radius:14px;padding:28px 28px;margin-bottom:22px}
+  header h1{font-size:26px;margin-bottom:8px}
+  header .def{font-size:15px;opacity:.95}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+        padding:22px 24px;margin-bottom:16px}
+  .card h2{font-size:18px;color:var(--accent);margin-bottom:12px;
+        border-left:4px solid var(--accent);padding-left:10px}
+  ul,ol{margin-left:20px}
+  li{margin:6px 0}
+  .tag{display:inline-block;background:var(--accent-soft);color:var(--accent);
+        font-size:12px;padding:2px 10px;border-radius:999px;margin-right:6px}
+  .warn{background:#fff8e6;border:1px solid #f3e2b3;color:#7a5b00;
+        border-radius:10px;padding:12px 14px;font-size:14px}
+  .src a{color:var(--accent);text-decoration:none}
+  .src a:hover{text-decoration:underline}
+  .quiz b{color:var(--warn)}
+  footer{text-align:center;color:var(--sub);font-size:13px;margin-top:18px}
+</style>
 </head>
 <body>
-<h1>2. 大模型上下文（Context）</h1>
-<h2>个人理解</h2>
-<p>上下文就是对话窗口里面全部的历史文字记录，大模型依靠这一整块记忆读懂我们连续多轮对话的完整意图。</p >
-<h2>核心机制</h2>
-<p>每一轮提问，都会把之前全部聊天文本打包送入模型；上下文窗口存在字数上限，内容过长时早期对话会丢失记忆。</p >
-<h2>真实应用场景</h2>
-<p>写一份长作业，分多次修改润色；AI记住整篇文章内容，后续修改不会丢失前面写好的段落。</p >
-<h2>概念边界&容易混淆的点</h2>
-<p>上下文不是永久记忆，一旦超出窗口长度，AI就会遗忘很早之前的内容；清空对话等于清空全部上下文。</p >
-<h2>参考来源</h2>
-<p>GPT技术文档、大模型Token原理公开资料</p >
-<h3>自测问题</h3>
-<p>1. Token是什么，和上下文窗口是什么关系？</p >
-<p>2. 对话太长之后AI为什么会忘记前面说过的内容？</p >
+<div class="wrap">
+  <header>
+    <h1>大模型的上下文（Context / 上下文窗口）</h1>
+    <div class="def">一句话定义：上下文是模型在一次推理中“能看到的所有文本”，以 token 为单位，受上下文窗口上限约束；它决定了模型能利用多少前文来生成回答。</div>
+  </header>
+
+  <div class="card">
+    <h2>① 学习目标</h2>
+    <ul>
+      <li>能解释 token 与上下文窗口的关系。</li>
+      <li>能说明“上下文不够”会导致什么问题。</li>
+      <li>能说出管理长上下文的常用策略（检索 / 摘要 / 分块）。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>② 核心问题</h2>
+    <ul>
+      <li>上下文窗口越大越好吗？为什么有上限？</li>
+      <li>模型“记住前文”靠的是什么机制（注意力）？</li>
+      <li>RAG / 摘要是如何缓解上下文不足的？</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>③ 个人化概念解释</h2>
+    <p>把上下文想成模型眼前的“工作台”。你每次对话，模型并不是真的“记得”你，而是把<strong>本次对话里所有历史 + 系统设定 + 新提问</strong>拼成一个长文本，一起喂给模型。它只看得到这块“工作台”上的内容。超出窗口的部分会被丢弃或压缩——所以模型会“健忘”，本质是工作台放不下了。</p>
+    <p>这不是模型的记忆问题，而是<strong>输入长度</strong>的工程约束。所谓“长期记忆”，几乎都是应用层用数据库帮模型把旧信息在需要时重新搬回工作台。</p>
+  </div>
+
+  <div class="card">
+    <h2>④ 核心机制 / 组成结构</h2>
+    <ul>
+      <li><b>Token</b>：文本被切成的的最小单位（词 / 字片段），计费与长度都按 token 算。</li>
+      <li><b>上下文窗口（Context Window）</b>：单次推理可容纳的最大 token 数（如 8K / 128K）。</li>
+      <li><b>注意力机制（Attention）</b>：Transformer 让每个 token 都能“关注”前文相关 token（见《Attention Is All You Need》），这是模型利用上下文的方式。</li>
+      <li><b>上下文的构成</b>：通常 = 系统提示 + 历史消息 + 检索注入 + 当前提问。</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⑤ 具体应用场景</h2>
+    <p><span class="tag">场景</span>超长合同问答</p>
+    <p><b>输入</b>：针对 200 页合同提问。</p>
+    <p><b>处理</b>：直接把整本合同塞进上下文会超限且昂贵。做法：先切片 + 向量检索，只把最相关的 3 段塞进本次上下文，让模型基于这几段回答。</p>
+    <p><b>输出</b>：精准答案，且成本与延迟可控。这正是用“检索补全上下文”代替“无限扩大窗口”。</p>
+  </div>
+
+  <div class="card">
+    <h2>⑥ 概念辨析与使用边界</h2>
+    <div class="warn">
+      <p><b>上下文 ≠ 长期记忆</b>：模型默认不跨会话保存；所谓“记忆”多是应用层用数据库模拟。</p>
+      <p><b>窗口大 ≠ 用得好</b>：过长上下文会引入噪声、拖慢速度、增加成本，且注意力可能被稀释。</p>
+      <p><b>边界</b>：超过窗口必须靠检索 / 摘要补全；把敏感信息放进上下文会带来泄露风险，需注意脱敏。</p>
+    </div>
+  </div>
+
+  <div class="card quiz">
+    <h2>⑦ 自测问题</h2>
+    <ol>
+      <li><b>为什么“模型忘了前面的话”通常是上下文窗口 / 拼接策略问题，而不是模型真的有记忆？</b><br>提示：模型无跨轮记忆，靠本次输入拼接；超窗口即被截断。</li>
+      <li><b>注意力机制如何解决“长距离依赖”？</b><br>提示：每个 token 可直接关注远距离相关 token，不必逐字传递。</li>
+      <li><b>什么场景应优先用 RAG 而不是无限扩大上下文？</b><br>提示：知识库巨大、需控制成本、且只需相关片段时。</li>
+    </ol>
+  </div>
+
+  <div class="card src">
+    <h2>⑧ 参考来源（已核实可达）</h2>
+    <ul>
+      <li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arXiv《Attention Is All You Need》(1706.03762)</a> —— 提出 Transformer 与注意力机制，是模型“利用上下文”的底层原理。</li>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 在 Agent 设计中对上下文窗口与记忆管理有实践讨论。</li>
+    </ul>
+  </div>
+
+  <footer>由 concept-learner-skill 生成 · 已人工核查来源与表述</footer>
+</div>
 </body>
 </html>

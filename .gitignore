@@ -1,1 +1,29 @@
+# ===== 依赖与构建产物 =====
+node_modules/
+dist/
+build/
+*.tsbuildinfo
 
+# ===== 环境变量与密钥（切勿提交） =====
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets.json
+credentials.json
+
+# ===== 日志与缓存 =====
+*.log
+.cache/
+.tmp/
+
+# ===== 系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ===== 个人敏感文件 =====
+*.local
+private/

@@ -1,18 +1,41 @@
 <!DOCTYPE html>
-<html lang="zh‑CN">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF‑8">
-<title>AI自学导航页</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 基础概念学习仓库</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+        background:#f7f8fa;color:#1f2329;line-height:1.8;padding:40px 16px}
+  .wrap{max-width:760px;margin:0 auto}
+  header{background:#3b6ef5;color:#fff;border-radius:14px;padding:30px;margin-bottom:24px}
+  header h1{font-size:26px;margin-bottom:8px}
+  header p{opacity:.95}
+  ul{list-style:none}
+  li{margin:12px 0}
+  a{display:block;background:#fff;border:1px solid #e6e8eb;border-radius:12px;
+     padding:16px 18px;text-decoration:none;color:#1f2329;font-weight:600;
+     transition:.15s}
+  a:hover{border-color:#3b6ef5;box-shadow:0 4px 14px rgba(59,110,245,.12)}
+  a span{display:block;font-weight:400;color:#5c6370;font-size:14px;margin-top:4px}
+  footer{text-align:center;color:#5c6370;font-size:13px;margin-top:22px}
+</style>
 </head>
 <body>
-<h1>AI基础概念学习仓库</h1>
-<p>点击链接查看知识点</p >
-<ul>
-<li><a href=" ">Agent 智能代理</a ></li>
-<li><a href="learning‑materials/language.html">Context 上下文</a ></li>
-<li><a href="learning‑materials/prompt.html">Prompt 提示词</a ></li>
-<li><a href="learning‑materials/token.html">Token 令牌</a ></li>
-<li><a href="learning‑materials/model.html">Model 大模型</a ></li>
-</ul>
+<div class="wrap">
+  <header>
+    <h1>AI 基础概念学习仓库</h1>
+    <p>用 concept-learner-skill 生成的个人概念学习资料合集。</p>
+  </header>
+  <ul>
+    <li><a href="learning-materials/agent.html">Agent（智能体）<span>自主感知—决策—执行循环的 AI 系统</span></a></li>
+    <li><a href="learning-materials/llm-context.html">大模型的上下文 Context<span>模型一次推理可见的文本范围与窗口约束</span></a></li>
+    <li><a href="learning-materials/skill.html">Skill（可复用技能）<span>把任务方法固化成可复用、可版本化的技能包</span></a></li>
+    <li><a href="learning-materials/concept-relationship.html">三者关系说明<span>Agent / 上下文 / Skill 的角色、流程图与个人理解</span></a></li>
+    <li><a href="learning-materials/rag.html">RAG（检索增强生成）<span>用同一 Skill 生成的“额外概念”演示，证明 Skill 可复用</span></a></li>
+  </ul>
+  <footer>仓库根目录 README.md 含完整说明与调用方式</footer>
+</div>
 </body>
 </html>
