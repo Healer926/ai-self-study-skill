@@ -88,6 +88,15 @@ flowchart LR
       <p>如果上下文长度不足或被不当截断，Agent 会<strong>丢失前面的指令和中间结果</strong>——即使 Skill 写得再好，也会因为“看不见需求”而跑偏、重复或中断。因此 Agent 设计里常做上下文管理：压缩历史、用检索把相关片段拉回窗口、把长期信息存外部库。</p>
       <p>结论：<strong>Skill 决定“怎么干”，Context 决定“ Agent 此刻还能记得什么”；两者共同决定 Agent 能不能把事干成。</strong></p>
     </div>
+    <table>
+      <tr><th>Agent 工作环节</th><th>上下文（Context）在其中的作用</th><th>上下文不足 / 被截断的后果</th></tr>
+      <tr><td>接收需求</td><td>系统设定 + 用户目标写入上下文，Agent 才知道“要做什么、按什么规则做”</td><td>目标不清，Agent 各行其是、反复追问或跑偏</td></tr>
+      <tr><td>规划步骤</td><td>历史子目标、已做动作保存在上下文，便于接续推进</td><td>忘记前面的计划，重复执行或走回头路</td></tr>
+      <tr><td>工具调用</td><td>工具返回结果写回上下文，作为下一步决策依据</td><td>拿不到上一步结果，链路断裂、任务无法收敛</td></tr>
+      <tr><td>自我纠错</td><td>错误与反馈留在上下文，Agent 可据此修正</td><td>同一个错反复犯，无法纠正</td></tr>
+      <tr><td>交付一致</td><td>全文上下文保证前后口径、术语、结论一致</td><td>前后矛盾、结论偏离最初需求</td></tr>
+    </table>
+    <p style="color:var(--sub);font-size:13px">一句话：上下文是 Agent 的“工作台”，台面够大、东西摆得对，Agent 才看得全、干得成；台面太小或中途被清，再好的手册也白搭。</p>
   </div>
 
   <div class="card">
@@ -101,6 +110,14 @@ flowchart LR
       </ul>
       <p>结论：<strong>Skill 是“把一次性对话经验”升级为“项目级可复用能力”的载体</strong>，而 Agent + 上下文则是这套能力真正跑起来的执行环境。</p>
     </div>
+    <table>
+      <tr><th>沉淀机制</th><th>说明（Skill 做了什么）</th><th>带来的可复用价值</th></tr>
+      <tr><td>结构化</td><td>把“怎么做”写成固定框架：适用场景、输入、生成步骤、输出结构、来源与自检要求</td><td>任意新概念都能套同一流程，无需每次重新教</td></tr>
+      <tr><td>版本化</td><td>SKILL.md 随仓库提交进 Git，留有修改历史</td><td>可回滚、可对比、可追溯，质量变化看得见</td></tr>
+      <tr><td>共享</td><td>放进 <code>.workbuddy/skills/</code>（项目级）或 <code>~/.workbuddy/</code>（用户级）即可被 Agent 加载</td><td>自己或团队成员跨项目直接复用，无需复制粘贴聊天记录</td></tr>
+      <tr><td>可迭代</td><td>发现不足就改 SKILL.md，再重新生成资料</td><td>资料质量随使用持续提升，经验越用越厚</td></tr>
+    </table>
+    <p style="color:var(--sub);font-size:13px">一句话：Skill 把“这次怎么把事讲清楚 / 干漂亮”的隐性经验，固化成一份可被加载、被版本管理、被多人复用的显性文件——这就是任务知识的沉淀。</p>
   </div>
 
   <div class="card">
