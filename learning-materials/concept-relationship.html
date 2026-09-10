@@ -108,6 +108,38 @@ flowchart LR
     <p>三者是“<b>能力（Skill）→ 状态（Context）→ 执行（Agent）</b>”的闭环：Skill 提供方法，Context 提供当下可用的信息，Agent 把两者结合起来自主推进任务。理解它们的关系后，我不再把“让 AI 帮我做事”当成一句提示词，而是当成“定义好手册、管理好上下文、交给 Agent 执行”的工程问题——本仓库的 Skill 与三份资料，就是这套认知的落地。</p>
   </div>
 
+  <div class="card">
+    <h2>⑦ 考点速记表：三者逻辑关系与常见考题对照</h2>
+    <p style="color:var(--sub);font-size:14px">下面这张表把三个概念串成“<b>方法（Skill）→ 状态（Context）→ 执行（Agent）</b>”的闭环，并标出考试最容易混淆的点，便于快速复习与自查。</p>
+    <table>
+      <tr><th>概念</th><th>一句话定位</th><th>必考核心点</th><th>易混淆坑（考官最爱挖）</th><th>与另两者的关系</th></tr>
+      <tr>
+        <td><b>Skill</b><br><span style="color:var(--c3)">工作手册</span></td>
+        <td>把“这类任务怎么做”固化成的<b>可复用方法包</b></td>
+        <td>①含 YAML（name/description）+ 场景/输入/步骤/输出/自检；②项目级存仓库 <code>.workbuddy/skills/</code>、用户级存 <code>~/.workbuddy/</code>；③接收任意概念，可迭代共享</td>
+        <td>易与 Prompt 混淆：Prompt 是一次性指令，Skill 可复用可版本化；易与 Agent 混淆：Skill 是“说明书”，Agent 是“执行者”</td>
+        <td>被 <b>Agent</b> 加载；其质量决定 Agent“怎么干”</td>
+      </tr>
+      <tr>
+        <td><b>Context</b><br><span style="color:var(--c2)">工作台/记忆</span></td>
+        <td>模型<b>本次推理可见的全部文本</b>（token 计），受窗口约束</td>
+        <td>①= 系统设定+历史+检索+当前提问；②超窗口即截断，需检索/摘要补全；③默认不跨会话，“记忆”多为应用层模拟</td>
+        <td>易与“长期记忆”混淆：默认不跨会话；易与“训练数据/参数”混淆：上下文是推理时临时喂入，非参数里的知识；窗口大≠效果好</td>
+        <td>被 <b>Agent</b> 读写；其充足与否决定 Agent“此刻还能记得什么”</td>
+      </tr>
+      <tr>
+        <td><b>Agent</b><br><span style="color:var(--c1)">执行员工</span></td>
+        <td>“感知-思考-行动-观察”<b>闭环</b>的自主执行系统</td>
+        <td>①组成=规划+模型+工具+记忆；②靠工具弥补模型“拿不到实时信息/不能执行动作”；③适合目标清、路径不定、需多工具的多步任务</td>
+        <td>易与脚本/Workflow 混淆：脚本步骤写死、Agent 由模型动态决策；易与 RAG 混淆：RAG 是补上下文的技术，常被 Agent 当工具调用；并非越复杂越好</td>
+        <td>加载 <b>Skill</b>、读写 <b>Context</b>；是能力真正跑起来的执行环境</td>
+      </tr>
+    </table>
+    <div class="focus" style="margin-top:12px">
+      <p><b>一句话串记（高频考点）</b>：Skill 提供“方法”、Context 提供“当下可用的信息”、Agent 把两者结合自主推进任务。三者共同决定一个 AI 系统能不能把事干成——缺 Skill 则每次重教，缺 Context 则 Agent 健忘跑偏，缺 Agent 则方法停在纸面、无法自动执行。</p>
+    </div>
+  </div>
+
   <footer>由 concept-learner-skill 生成 · 已人工核查</footer>
 </div>
 </body>

@@ -29,6 +29,17 @@
   .src a{color:var(--accent);text-decoration:none}
   .src a:hover{text-decoration:underline}
   .quiz b{color:var(--warn)}
+  .quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 14px;
+    border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
+    font-size:14px;color:var(--ink);transition:.15s}
+  .quiz-opt:hover{border-color:var(--accent)}
+  .quiz-opt.correct{border-color:#2e9e5b;background:#eafaf0;color:#1c7a43}
+  .quiz-opt.wrong{border-color:#d9534f;background:#fdecea;color:#a9322b}
+  .feedback{margin-top:8px;font-size:14px;padding:10px 12px;border-radius:10px;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:#eafaf0;border:1px solid #bfe9cd;color:#1c7a43}
+  .feedback.no{background:#fdecea;border:1px solid #f3c6c2;color:#a9322b}
+  .score{margin-top:14px;font-weight:600;color:var(--accent)}
   footer{text-align:center;color:var(--sub);font-size:13px;margin-top:18px}
 </style>
 </head>
@@ -81,10 +92,13 @@
   </div>
 
   <div class="card">
-    <h2>⑥ 概念辨析与使用边界</h2>
+    <h2>⑥ 概念辨析、使用边界与易混淆知识点</h2>
     <div class="warn">
-      <p><b>Skill ≠ Prompt</b>：Prompt 是单次指令；Skill 是带结构、可复用、可版本化的“方法包”。</p>
-      <p><b>Skill ≠ Agent</b>：Agent 是执行者；Skill 是 Agent 加载的“知识 / 流程说明书”。</p>
+      <p><b>Skill ≠ Prompt</b>：Prompt 是单次指令，用完即弃；Skill 是带结构、可复用、可版本化的“方法包”，随仓库长期沉淀。</p>
+      <p><b>Skill ≠ Agent</b>：Agent 是执行者（运行时系统）；Skill 是 Agent 在相关任务时加载的“知识 / 流程说明书”。</p>
+      <p><b>Skill ≠ Plugin / Connector（连接器）</b>：Connector 提供“连某个外部服务的能力”（如某 API）；Skill 提供“做某类任务的方法”。一个 Skill 内部可以调用多个 Connector / 工具。</p>
+      <p><b>Skill ≠ 宏 / 脚本模板</b>：宏是写死步骤的自动化；Skill 通过自然语言框架引导模型灵活执行，容忍不同输入。</p>
+      <p><b>易混淆小结</b>：Prompt = 一次便条；宏 = 写死的流水线；Connector = 一根外接水管；Skill = 一本“这类活怎么干”的工作手册（可调用多根水管）。</p>
       <p><b>边界</b>：Skill 不能替代模型能力本身；写得太啰嗦或场景不清反而会让 Agent 跑偏。好的 Skill 应“小而专”，讲清何时用、怎么用、产出什么。</p>
     </div>
   </div>
@@ -96,17 +110,99 @@
       <li><b>为什么 SKILL.md 顶部的 name / description 很重要？</b><br>提示：它们决定 Skill 的标识与“何时被匹配 / 如何被调用”。</li>
       <li><b>一个“什么都想管”的 Skill 会有什么问题？</b><br>提示：范围模糊会让 Agent 误触发或执行失焦，反而不如小而专的 Skill 好用。</li>
     </ol>
+    <details class="warn" style="margin-top:12px;cursor:pointer">
+      <summary style="font-weight:700">参考答案（点击展开）</summary>
+      <ol style="margin-top:8px">
+        <li><b>答</b>：项目级 Skill 存于仓库内 <code>.workbuddy/skills/&lt;name&gt;/</code>，仅对该仓库生效、随仓库提交共享；用户级存于 <code>~/.workbuddy/skills/</code>，对你所有项目全局可用。</li>
+        <li><b>答</b>：name 是唯一标识，description 用于让 Agent / 平台判断“何时该加载这个 Skill、如何被调用”，写不清会导致匹配失败或误触发。</li>
+        <li><b>答</b>：范围模糊会让 Agent 在错误场景误触发、或执行时目标失焦；小而专、边界清晰的 Skill 更易被准确匹配、结果更可控。</li>
+      </ol>
+    </details>
+  </div>
+
+  <div class="card quiz">
+    <h2>⑧ 自测选择题（互动）</h2>
+    <p>点击任意选项即可看到即时反馈；全部作答后下方显示得分。每题只有一个最佳答案。</p>
+
+    <div class="q" data-answer="B" data-explain="Prompt 是一次性指令、用完即弃；Skill 是带结构、可复用、可版本化的“方法包”，能随仓库长期沉淀与共享。">
+      <p><b>1. Skill 与 Prompt 最本质的区别是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. Skill 更短</button>
+      <button class="quiz-opt" data-opt="B">B. Skill 是可复用、可版本化的方法包；Prompt 是一次性指令</button>
+      <button class="quiz-opt" data-opt="C">C. 两者完全一样</button>
+      <button class="quiz-opt" data-opt="D">D. Prompt 不能写在文件里</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="项目级 Skill 存于仓库内的 .workbuddy/skills/&lt;name&gt;/，只对该仓库生效、随仓库提交共享；用户级存于用户目录、全局可用。">
+      <p><b>2. 项目级 Skill 存放在哪里、作用范围是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 云端，对所有网站生效</button>
+      <button class="quiz-opt" data-opt="B">B. 仓库内 .workbuddy/skills/&lt;name&gt;/，仅本仓库生效</button>
+      <button class="quiz-opt" data-opt="C">C. 模型参数里</button>
+      <button class="quiz-opt" data-opt="D">D. 操作系统内核</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="C" data-explain="name 是唯一标识，description 用于让平台 / Agent 判断“何时加载、如何调用”；这两个字段决定 Skill 能否被准确匹配。">
+      <p><b>3. SKILL.md 顶部哪两个字段最关键（决定“何时被匹配 / 如何被调用”）？</b></p>
+      <button class="quiz-opt" data-opt="A">A. title 与 author</button>
+      <button class="quiz-opt" data-opt="B">B. version 与 license</button>
+      <button class="quiz-opt" data-opt="C">C. name 与 description</button>
+      <button class="quiz-opt" data-opt="D">D. price 与 rating</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="Skill 沉淀的是“方法”，不能替代模型本身的能力；范围模糊反而会误导 Agent。好的 Skill 应“小而专”，讲清何时用、怎么用、产出什么。">
+      <p><b>4. 关于 Skill 的边界，下列说法正确的是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. Skill 越复杂越厉害，能替代模型</button>
+      <button class="quiz-opt" data-opt="B">B. Skill 不能替代模型能力，应“小而专”、边界清晰</button>
+      <button class="quiz-opt" data-opt="C">C. Skill 越多越好，无需取舍</button>
+      <button class="quiz-opt" data-opt="D">D. Skill 只能手写、不能版本管理</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="score" id="score">已答对 0 / 4 题</div>
   </div>
 
   <div class="card src">
-    <h2>⑧ 参考来源（已核实可达）</h2>
+    <h2>⑨ 参考来源（已核实可达）</h2>
     <ul>
-      <li><a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank" rel="noopener">WorkBuddy 官方文档《WorkBuddy 简介》</a> —— 含 Agent / 技能定位与平台能力说明。</li>
+      <li><a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank" rel="noopener">WorkBuddy 官方文档《WorkBuddy 简介》</a> —— 含 Agent / 技能定位与平台能力说明，是本项目级 Skill 的权威依据。</li>
       <li>本仓库 <a href="../.workbuddy/skills/concept-learner-skill/SKILL.md">SKILL.md</a> —— 既是说明文档，也是 Skill 本身的实例。</li>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 强调“简单、可组合、可复用”的 Agent 构建思路，与“小而专的 Skill”理念一致。</li>
     </ul>
   </div>
 
   <footer>由 concept-learner-skill 生成 · 已人工核查来源与表述</footer>
 </div>
+<script>
+document.querySelectorAll('.q').forEach(function(q){
+  var answer=q.dataset.answer;
+  var fb=q.querySelector('.feedback');
+  q.querySelectorAll('.quiz-opt').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      q.querySelectorAll('.quiz-opt').forEach(function(b){b.classList.remove('correct','wrong');});
+      var pick=btn.dataset.opt;
+      if(pick===answer){
+        btn.classList.add('correct');
+        q.classList.add('answered-correct');
+        fb.className='feedback show ok';
+      }else{
+        btn.classList.add('wrong');
+        var right=q.querySelector('.quiz-opt[data-opt="'+answer+'"]');
+        if(right) right.classList.add('correct');
+        q.classList.remove('answered-correct');
+        fb.className='feedback show no';
+      }
+      fb.innerHTML='<b>'+(pick===answer?'✅ 回答正确。':'❌ 回答错误。')+'</b> '+q.dataset.explain;
+      updateScore();
+    });
+  });
+});
+function updateScore(){
+  var total=document.querySelectorAll('.q').length;
+  var ok=document.querySelectorAll('.q.answered-correct').length;
+  document.getElementById('score').textContent='已答对 '+ok+' / '+total+' 题'+(ok===total?' —— 全部正确，掌握良好！':'');
+}
+</script>
 </body>
 </html>

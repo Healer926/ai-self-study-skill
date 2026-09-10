@@ -43,6 +43,8 @@
 | `learning-materials/concept-relationship.md`   | 三者关系（文本版）   | 同上内容的 Markdown 版本，便于 GitHub 直接阅读                 |
 | `learning-materials/rag.html`                  | RAG（检索增强生成） | 用**同一 Skill** 生成的额外概念，证明 Skill 可学习本作业三个核心概念之外的内容 |
 
+> 三份核心资料（`agent.html` / `llm-context.html` / `skill.html`）均统一包含：个人化解释、核心机制、应用案例、**概念边界与易混淆知识点辨析**、**开放自测题 + 参考答案（可展开）**、**互动选择题（点击即出反馈、自动计分）**，以及已逐条核实可达的真实参考链接。
+>
 > `index.html` 为学习导航首页，链接上述资料。其中 `rag.html` 是用**同一个 Skill** 对“RAG”这一额外概念生成的，直接证明该 Skill 可复用于本作业三个核心概念之外的内容（符合“Skill 越可复用，成绩越高”的要求）。
 
 ## 六、我使用 AI 后的人工核查与修改
@@ -63,6 +65,13 @@
 4. **Skill 增强**：在原有 `SKILL.md` 基础上，显式补全「输出结构」「资料来源要求」「自检要求」三个板块，并强调其**可复用性**（接收任意概念，而非仅本次三个概念）。
 5. **关系说明补强**：新增 `concept-relationship.md`（文本版），并在 HTML 版中加入 Mermaid 流程图与对比表，明确写出“上下文如何影响 Agent”和“Skill 如何沉淀可复用知识”两个重点。
 
+**本轮补充与增强（第二轮，针对批改要点）**：
+
+6. **参考链接补实**：三份资料各自补充 1–2 条真实可打开的权威链接并逐条核实可达——Agent 增加 arXiv《ReAct》(2210.03629)；上下文增加 Wikipedia《Large language model》；Skill 增加 Anthropic《Building effective agents》。所有链接均为真实公开地址，无伪造、无猜测网址。
+7. **概念边界与易混淆辨析强化**：三份资料的 ⑥ 板块均扩充为“概念辨析 + 使用边界 + 易混淆知识点”，明确区分 Agent/Workflow/RAG/工具、上下文/记忆/Prompt/训练数据、Skill/Prompt/Plugin/宏 等高频混淆组合，并给出“一句话小结”便于记忆。
+8. **自测题 + 参考答案**：三份资料在 ⑦ 开放自测题下新增“参考答案（可点击展开）”；`agent.html` 原有互动选择题保留，`llm-context.html` 与 `skill.html` 新增同款互动选择题（点击即出对错反馈与解析、底部自动计分），实现“做—评—学”闭环。
+9. **关系说明新增考点速记表**：`concept-relationship.html` 增加 ⑦「考点速记表」，用一张表把三者的“定位 / 必考核心点 / 易混淆坑 / 相互关系”并列呈现，并给出“一句话串记”，强化考试重点。
+
 ## 七、项目文件结构
 
 ```
@@ -76,7 +85,8 @@ ai-self-study-skill/
 │   ├── llm-context.html
 │   ├── skill.html
 │   ├── concept-relationship.html
-│   └── concept-relationship.md
+│   ├── concept-relationship.md
+│   └── rag.html
 ├── index.html
 ├── README.md
 └── .gitignore

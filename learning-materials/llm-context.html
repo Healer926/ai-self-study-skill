@@ -29,6 +29,17 @@
   .src a{color:var(--accent);text-decoration:none}
   .src a:hover{text-decoration:underline}
   .quiz b{color:var(--warn)}
+  .quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 14px;
+    border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
+    font-size:14px;color:var(--ink);transition:.15s}
+  .quiz-opt:hover{border-color:var(--accent)}
+  .quiz-opt.correct{border-color:#2e9e5b;background:#eafaf0;color:#1c7a43}
+  .quiz-opt.wrong{border-color:#d9534f;background:#fdecea;color:#a9322b}
+  .feedback{margin-top:8px;font-size:14px;padding:10px 12px;border-radius:10px;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:#eafaf0;border:1px solid #bfe9cd;color:#1c7a43}
+  .feedback.no{background:#fdecea;border:1px solid #f3c6c2;color:#a9322b}
+  .score{margin-top:14px;font-weight:600;color:var(--accent)}
   footer{text-align:center;color:var(--sub);font-size:13px;margin-top:18px}
 </style>
 </head>
@@ -82,10 +93,13 @@
   </div>
 
   <div class="card">
-    <h2>⑥ 概念辨析与使用边界</h2>
+    <h2>⑥ 概念辨析、使用边界与易混淆知识点</h2>
     <div class="warn">
-      <p><b>上下文 ≠ 长期记忆</b>：模型默认不跨会话保存；所谓“记忆”多是应用层用数据库模拟。</p>
-      <p><b>窗口大 ≠ 用得好</b>：过长上下文会引入噪声、拖慢速度、增加成本，且注意力可能被稀释。</p>
+      <p><b>上下文 ≠ 长期记忆</b>：模型默认不跨会话保存；所谓“记忆”多是应用层用数据库模拟，在需要时再搬回上下文。</p>
+      <p><b>上下文 ≠ Prompt</b>：Prompt 通常指“单次指令文本”；上下文是本次推理里被拼接进窗口的<strong>全部文本</strong>（系统设定 + 历史 + 检索 + 当前提问），Prompt 只是上下文的一部分。</p>
+      <p><b>上下文 ≠ 训练数据 / 参数记忆</b>：训练数据在预训练阶段固化进参数；上下文是推理时临时喂入的内容。模型“知道”某事可能来自参数，也可能来自本次上下文，二者要分清。</p>
+      <p><b>窗口大 ≠ 用得好</b>：过长上下文会引入噪声、拖慢速度、增加成本，且注意力可能被稀释（“中间遗忘”现象）。</p>
+      <p><b>易混淆小结</b>：参数记忆 = 模型脑子里背的；上下文 = 这次摊在工作台上的纸；Prompt = 其中你写的一张便条。</p>
       <p><b>边界</b>：超过窗口必须靠检索 / 摘要补全；把敏感信息放进上下文会带来泄露风险，需注意脱敏。</p>
     </div>
   </div>
@@ -97,17 +111,99 @@
       <li><b>注意力机制如何解决“长距离依赖”？</b><br>提示：每个 token 可直接关注远距离相关 token，不必逐字传递。</li>
       <li><b>什么场景应优先用 RAG 而不是无限扩大上下文？</b><br>提示：知识库巨大、需控制成本、且只需相关片段时。</li>
     </ol>
+    <details class="warn" style="margin-top:12px;cursor:pointer">
+      <summary style="font-weight:700">参考答案（点击展开）</summary>
+      <ol style="margin-top:8px">
+        <li><b>答</b>：模型本身不跨会话保存信息；它每次只“看”本次被拼进窗口的文本。所谓“忘了”，是拼接策略把旧内容挤出窗口或被截断，并非模型有记忆后丢失。</li>
+        <li><b>答</b>：Transformer 的注意力让任意两个 token 直接建立关联，模型可在生成时直接“回头看”远距离的相关前文，不必靠逐字顺序传递，从而缓解长距离依赖。</li>
+        <li><b>答</b>：当知识库极大、只需其中相关片段、且要控制成本与延迟时，RAG 用检索把少量相关文本注入上下文，比把整库塞进窗口更省、更准。</li>
+      </ol>
+    </details>
+  </div>
+
+  <div class="card quiz">
+    <h2>⑧ 自测选择题（互动）</h2>
+    <p>点击任意选项即可看到即时反馈；全部作答后下方显示得分。每题只有一个最佳答案。</p>
+
+    <div class="q" data-answer="B" data-explain="上下文窗口是单次推理可容纳的最大 token 数，它决定了模型“本次能看到多少前文”；与模型参数、训练数据大小无关。">
+      <p><b>1. 上下文窗口（Context Window）的主要作用是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 决定模型的参数规模</button>
+      <button class="quiz-opt" data-opt="B">B. 限制单次推理可容纳的最大 token 数，决定模型本次能看到多少前文</button>
+      <button class="quiz-opt" data-opt="C">C. 控制训练数据的大小</button>
+      <button class="quiz-opt" data-opt="D">D. 决定模型回答用哪种语言</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="C" data-explain="模型默认不跨会话保存信息；“跨会话记住你”几乎都是应用层用数据库 / 外部存储，在需要时把相关信息重新搬回本次上下文。">
+      <p><b>2. 模型“跨会话记住你之前说的事”主要依赖什么？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 模型参数自带的长期记忆</button>
+      <button class="quiz-opt" data-opt="B">B. 上下文窗口自动永久保留</button>
+      <button class="quiz-opt" data-opt="C">C. 应用层用数据库 / 外部存储，在需要时把信息重新搬回本次上下文</button>
+      <button class="quiz-opt" data-opt="D">D. 预训练时背下了你的私人资料</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="RAG 是把最相关的外部知识检索出来、注入“本次上下文”，从而缓解窗口不足；它不改变模型参数，也不等于训练。">
+      <p><b>3. 关于 RAG 与上下文的关系，正确的是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. RAG 会扩大模型的参数规模</button>
+      <button class="quiz-opt" data-opt="B">B. RAG 把相关外部知识检索后注入本次上下文，缓解窗口不足</button>
+      <button class="quiz-opt" data-opt="C">C. RAG 让模型永远记住这些内容</button>
+      <button class="quiz-opt" data-opt="D">D. RAG 等同于重新训练模型</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="C" data-explain="窗口并非越大越好：过长上下文会引入噪声、拖慢推理、增加成本，且注意力可能被稀释（中间内容易被忽略）。是否“够用”比“最大”更重要。">
+      <p><b>4. 关于“上下文窗口越大越好”，下列说法正确的是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 窗口越大，模型越聪明</button>
+      <button class="quiz-opt" data-opt="B">B. 窗口越大，调用越便宜</button>
+      <button class="quiz-opt" data-opt="C">C. 不一定；过长会引入噪声、增加成本、稀释注意力，够用即可</button>
+      <button class="quiz-opt" data-opt="D">D. 窗口大小完全不影响注意力效果</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="score" id="score">已答对 0 / 4 题</div>
   </div>
 
   <div class="card src">
-    <h2>⑧ 参考来源（已核实可达）</h2>
+    <h2>⑨ 参考来源（已核实可达）</h2>
     <ul>
       <li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arXiv《Attention Is All You Need》(1706.03762)</a> —— 提出 Transformer 与注意力机制，是模型“利用上下文”的底层原理。</li>
       <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 在 Agent 设计中对上下文窗口与记忆管理有实践讨论。</li>
+      <li><a href="https://en.wikipedia.org/wiki/Large_language_model" target="_blank" rel="noopener">Wikipedia《Large language model》</a> —— 对 LLM、token 与上下文窗口的通用背景介绍，便于建立整体认知。</li>
     </ul>
   </div>
 
   <footer>由 concept-learner-skill 生成 · 已人工核查来源与表述</footer>
 </div>
+<script>
+document.querySelectorAll('.q').forEach(function(q){
+  var answer=q.dataset.answer;
+  var fb=q.querySelector('.feedback');
+  q.querySelectorAll('.quiz-opt').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      q.querySelectorAll('.quiz-opt').forEach(function(b){b.classList.remove('correct','wrong');});
+      var pick=btn.dataset.opt;
+      if(pick===answer){
+        btn.classList.add('correct');
+        q.classList.add('answered-correct');
+        fb.className='feedback show ok';
+      }else{
+        btn.classList.add('wrong');
+        var right=q.querySelector('.quiz-opt[data-opt="'+answer+'"]');
+        if(right) right.classList.add('correct');
+        q.classList.remove('answered-correct');
+        fb.className='feedback show no';
+      }
+      fb.innerHTML='<b>'+(pick===answer?'✅ 回答正确。':'❌ 回答错误。')+'</b> '+q.dataset.explain;
+      updateScore();
+    });
+  });
+});
+function updateScore(){
+  var total=document.querySelectorAll('.q').length;
+  var ok=document.querySelectorAll('.q.answered-correct').length;
+  document.getElementById('score').textContent='已答对 '+ok+' / '+total+' 题'+(ok===total?' —— 全部正确，掌握良好！':'');
+}
+</script>
 </body>
 </html>

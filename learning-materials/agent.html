@@ -94,11 +94,14 @@
   </div>
 
   <div class="card">
-    <h2>⑥ 概念辨析与使用边界</h2>
+    <h2>⑥ 概念辨析、使用边界与易混淆知识点</h2>
     <div class="warn">
-      <p><b>Agent ≠ 普通 Prompt</b>：Prompt 是一次性指令；Agent 有循环与工具，能多步自主推进。</p>
-      <p><b>Agent ≠ 自动化脚本</b>：脚本步骤写死；Agent 的步骤由模型在运行中决定，更灵活但更不可预测。</p>
-      <p><b>边界</b>：当任务目标模糊、缺少可靠工具，或要求 100% 可复现时，Agent 容易跑偏，应降级为确定性的工作流。</p>
+      <p><b>Agent ≠ 普通 Prompt</b>：Prompt 是一次性指令，一问一答即结束；Agent 有“感知-思考-行动-观察”的闭环与工具，能多步自主推进。</p>
+      <p><b>Agent ≠ 自动化脚本 / Workflow</b>：脚本与“工作流”的步骤是预先写死的、确定性的；Agent 的下一步由模型在运行中动态决定，更灵活但更不可预测。</p>
+      <p><b>Agent ≠ RAG</b>：RAG 是一种“给模型补上下文”的技术（检索相关知识再生成）；它常被 Agent 当作一个工具来调用。RAG 解决“知识不够”，Agent 解决“流程是否自主”。</p>
+      <p><b>Agent ≠ 工具 / Plugin</b>：工具（搜索、代码、API）是被调用的“能力”；Agent 是调度这些工具、决定何时调用的“执行者”。</p>
+      <p><b>易混淆小结</b>：大模型（大脑）≈ 顾问；工具 ≈ 手脚；Workflow ≈ 写死的 SOP；Agent ≈ 带着顾问和手脚、按 SOP 灵活干活的员工。</p>
+      <p><b>边界</b>：当任务目标模糊、缺少可靠工具，或要求 100% 可复现时，Agent 容易跑偏，应降级为确定性的工作流或脚本。</p>
     </div>
   </div>
 
@@ -109,6 +112,14 @@
       <li><b>没有“记忆 / 上下文”，Agent 在长任务中会出什么问题？</b><br>提示：会丢失前面的子目标与中间结果，导致重复或偏离。</li>
       <li><b>工具调用解决了模型的哪两个根本限制？</b><br>提示：①无法获取实时 / 外部信息；②无法直接执行动作（发消息、跑代码）。</li>
     </ol>
+    <details class="warn" style="margin-top:12px;cursor:pointer">
+      <summary style="font-weight:700">参考答案（点击展开）</summary>
+      <ol style="margin-top:8px">
+        <li><b>答</b>：当步骤完全固定、要求 100% 可复现、容错率低（如金融对账、合规校验）时，Agent 的“模型动态决策”会带来不确定性与不可控成本，确定性脚本 / 工作流更稳更可审计。</li>
+        <li><b>答</b>：Agent 依赖上下文保存子目标与中间结果；若没有记忆，它会忘记前面的计划与工具返回，导致重复调用、偏离目标或无法收敛。</li>
+        <li><b>答</b>：工具调用弥补①模型拿不到实时 / 外部信息（如当前股价、最新文档）；②模型不能直接执行动作（如发邮件、跑代码、调 API）。</li>
+      </ol>
+    </details>
   </div>
 
   <div class="card quiz">
@@ -159,6 +170,7 @@
     <ul>
       <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 官方给出的 Agent 设计范式，强调“简单可组合”而非复杂框架。</li>
       <li><a href="https://lilianweng.github.io/posts/2023-06-23-agent/" target="_blank" rel="noopener">Lilian Weng《LLM Powered Autonomous Agents》</a> —— 系统梳理 Agent 的规划、记忆、工具等模块，适合深入原理。</li>
+      <li><a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener">arXiv《ReAct: Synergizing Reasoning and Acting in Language Models》(2210.03629)</a> —— 提出“推理 + 行动”交错执行的经典范式，是 Agent 循环（思考→调用工具→观察）的重要论文基础。</li>
     </ul>
   </div>
 
