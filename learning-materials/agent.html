@@ -29,6 +29,17 @@
   .src a{color:var(--accent);text-decoration:none}
   .src a:hover{text-decoration:underline}
   .quiz b{color:var(--warn)}
+  .quiz-opt{display:block;width:100%;text-align:left;margin:8px 0;padding:10px 14px;
+    border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;
+    font-size:14px;color:var(--ink);transition:.15s}
+  .quiz-opt:hover{border-color:var(--accent)}
+  .quiz-opt.correct{border-color:#2e9e5b;background:#eafaf0;color:#1c7a43}
+  .quiz-opt.wrong{border-color:#d9534f;background:#fdecea;color:#a9322b}
+  .feedback{margin-top:8px;font-size:14px;padding:10px 12px;border-radius:10px;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:#eafaf0;border:1px solid #bfe9cd;color:#1c7a43}
+  .feedback.no{background:#fdecea;border:1px solid #f3c6c2;color:#a9322b}
+  .score{margin-top:14px;font-weight:600;color:var(--accent)}
   footer{text-align:center;color:var(--sub);font-size:13px;margin-top:18px}
 </style>
 </head>
@@ -100,8 +111,51 @@
     </ol>
   </div>
 
+  <div class="card quiz">
+    <h2>⑧ 自测选择题（互动）</h2>
+    <p>点击任意选项即可看到即时反馈；全部作答后下方显示得分。每题只有一个最佳答案。</p>
+
+    <div class="q" data-answer="B" data-explain="Agent 的本质是“感知→思考→行动→观察”的闭环，能多步自主推进；模型大小、回答速度、语言都不是它与聊天机器人的本质区别。">
+      <p><b>1. Agent 与普通聊天机器人最本质的区别是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 使用的模型更大</button>
+      <button class="quiz-opt" data-opt="B">B. 能形成“感知-思考-行动-观察”的闭环，自主多步推进</button>
+      <button class="quiz-opt" data-opt="C">C. 回答速度更快</button>
+      <button class="quiz-opt" data-opt="D">D. 使用中文</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="工具（搜索 / 代码 / API）弥补的是模型的两大根本限制：①拿不到实时与外部信息；②不能直接执行动作（发消息、跑代码）。">
+      <p><b>2. Agent 的“工具调用”主要弥补了模型的哪类短板？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 模型不会写诗</button>
+      <button class="quiz-opt" data-opt="B">B. 模型无法获取实时 / 外部信息，也无法直接执行动作</button>
+      <button class="quiz-opt" data-opt="C">C. 模型太贵</button>
+      <button class="quiz-opt" data-opt="D">D. 模型不支持长文本</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="Agent 擅长“目标清晰但路径不固定”的多步任务；固定、要求可复现的活交给确定性脚本更稳，单轮事实问答普通提示词就够。">
+      <p><b>3. 以下哪类任务最适合用 Agent？</b></p>
+      <button class="quiz-opt" data-opt="A">A. 步骤固定、需 100% 可复现的批处理</button>
+      <button class="quiz-opt" data-opt="B">B. 目标清晰但步骤不固定、需调用多种外部工具的多步任务</button>
+      <button class="quiz-opt" data-opt="C">C. 单一事实问答</button>
+      <button class="quiz-opt" data-opt="D">D. 计算 1+1</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q" data-answer="B" data-explain="Agent 灵活但不可预测：当任务模糊、缺少可靠工具或要求极致可复现时容易跑偏，应改用确定性的工作流。">
+      <p><b>4. 关于 Agent 的风险边界，下列说法正确的是？</b></p>
+      <button class="quiz-opt" data-opt="A">A. Agent 永远比脚本更可靠</button>
+      <button class="quiz-opt" data-opt="B">B. 当任务模糊、缺少可靠工具或要求极致可复现时，应降级为确定性工作流</button>
+      <button class="quiz-opt" data-opt="C">C. Agent 不会出错</button>
+      <button class="quiz-opt" data-opt="D">D. 工具越多越好</button>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="score" id="score">已答对 0 / 4 题</div>
+  </div>
+
   <div class="card src">
-    <h2>⑧ 参考来源（已核实可达）</h2>
+    <h2>⑨ 参考来源（已核实可达）</h2>
     <ul>
       <li><a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">Anthropic《Building effective agents》</a> —— 官方给出的 Agent 设计范式，强调“简单可组合”而非复杂框架。</li>
       <li><a href="https://lilianweng.github.io/posts/2023-06-23-agent/" target="_blank" rel="noopener">Lilian Weng《LLM Powered Autonomous Agents》</a> —— 系统梳理 Agent 的规划、记忆、工具等模块，适合深入原理。</li>
@@ -110,5 +164,36 @@
 
   <footer>由 concept-learner-skill 生成 · 已人工核查来源与表述</footer>
 </div>
+
+<script>
+document.querySelectorAll('.q').forEach(function(q){
+  var answer=q.dataset.answer;
+  var fb=q.querySelector('.feedback');
+  q.querySelectorAll('.quiz-opt').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      q.querySelectorAll('.quiz-opt').forEach(function(b){b.classList.remove('correct','wrong');});
+      var pick=btn.dataset.opt;
+      if(pick===answer){
+        btn.classList.add('correct');
+        q.classList.add('answered-correct');
+        fb.className='feedback show ok';
+      }else{
+        btn.classList.add('wrong');
+        var right=q.querySelector('.quiz-opt[data-opt="'+answer+'"]');
+        if(right) right.classList.add('correct');
+        q.classList.remove('answered-correct');
+        fb.className='feedback show no';
+      }
+      fb.innerHTML='<b>'+(pick===answer?'✅ 回答正确。':'❌ 回答错误。')+'</b> '+q.dataset.explain;
+      updateScore();
+    });
+  });
+});
+function updateScore(){
+  var total=document.querySelectorAll('.q').length;
+  var ok=document.querySelectorAll('.q.answered-correct').length;
+  document.getElementById('score').textContent='已答对 '+ok+' / '+total+' 题'+(ok===total?' —— 全部正确，掌握良好！':'');
+}
+</script>
 </body>
 </html>
